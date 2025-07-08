@@ -1,0 +1,79 @@
+.App {
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  max-width: 500px;
+  width: 90%;
+}
+
+.hello-text {
+  font-size: 3rem;
+  font-weight: bold;
+  margin: 0 0 20px 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hello-text:hover {
+  transform: scale(1.05);
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+}
+
+.instructions {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.1rem;
+  margin: 20px 0;
+  line-height: 1.5;
+}
+
+.console-output {
+  margin-top: 30px;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.console-output p {
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0 10px 0;
+  font-size: 0.9rem;
+}
+
+.console-output code {
+  color: #FFD700;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 8px 12px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  display: block;
+  word-break: break-all;
+}
+
+/* Mobile responsive design */
+@media (max-width: 768px) {
+  .container {
+    padding: 30px 20px;
+    margin: 20px;
+  }
+  
+  .hello-text {
+    font-size: 2.5rem;
+  }
+  
+  .instructions {
+    font-size: 1rem;
+  }
+} 
