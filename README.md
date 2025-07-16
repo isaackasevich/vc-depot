@@ -11,15 +11,17 @@ src/
 │   ├── App.css          # Hello World styles
 │   └── index.tsx        # Hello World entry point
 ├── recipe_box/          # Recipe management application
-│   ├── App.tsx          # Main Recipe Box component
-│   ├── App.css          # Recipe Box styles
-│   ├── api.ts           # Frontend API service
+│   ├── frontend/        # React frontend
+│   │   ├── App.tsx      # Main Recipe Box component
+│   │   ├── App.css      # Recipe Box styles
+│   │   └── api.ts       # Frontend API service
+│   ├── backend/         # Python FastAPI backend
+│   │   ├── main.py      # Backend application
+│   │   ├── requirements.txt
+│   │   ├── package.json
+│   │   └── README.md
 │   ├── index.tsx        # Recipe Box entry point
-│   └── backend/         # Python FastAPI backend
-│       ├── main.py      # Backend application
-│       ├── requirements.txt
-│       ├── package.json
-│       └── README.md
+│   └── README.md        # Recipe Box documentation
 ├── index.tsx            # Main application with project selector
 ├── index.css            # Global styles and project selector styles
 └── ...
