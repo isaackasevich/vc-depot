@@ -13,7 +13,13 @@ src/
 ├── recipe_box/          # Recipe management application
 │   ├── App.tsx          # Main Recipe Box component
 │   ├── App.css          # Recipe Box styles
-│   └── index.tsx        # Recipe Box entry point
+│   ├── api.ts           # Frontend API service
+│   ├── index.tsx        # Recipe Box entry point
+│   └── backend/         # Python FastAPI backend
+│       ├── main.py      # Backend application
+│       ├── requirements.txt
+│       ├── package.json
+│       └── README.md
 ├── index.tsx            # Main application with project selector
 ├── index.css            # Global styles and project selector styles
 └── ...
@@ -38,6 +44,8 @@ A comprehensive recipe management application with the following features:
 
 ## Getting Started
 
+### Frontend (React)
+
 1. Install dependencies:
    ```bash
    npm install
@@ -51,6 +59,55 @@ A comprehensive recipe management application with the following features:
 3. Open [http://localhost:3000](http://localhost:3000) to view the project selector
 
 4. Choose a project to run from the main interface
+
+### Backend (Python FastAPI)
+
+The Recipe Box now includes a Python backend API packaged within the frontend directory. To run it:
+
+1. Navigate to the recipe box backend directory:
+   ```bash
+   cd src/recipe_box/backend
+   ```
+
+2. Install Python dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Start the backend server:
+   ```bash
+   python main.py
+   ```
+   
+   Or for development with auto-reload:
+   ```bash
+   uvicorn main:app --reload --host 0.0.0.0 --port 8000
+   ```
+
+4. The API will be available at:
+   - API: http://localhost:8000
+   - Interactive docs: http://localhost:8000/docs
+
+### Full Stack Setup
+
+To run both frontend and backend:
+
+1. **Terminal 1** - Start the backend:
+   ```bash
+   cd src/recipe_box/backend
+   pip install -r requirements.txt
+   python main.py
+   ```
+
+2. **Terminal 2** - Start the frontend:
+   ```bash
+   npm install
+   npm start
+   ```
+
+3. Access the application:
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:8000
 
 ## Available Scripts
 

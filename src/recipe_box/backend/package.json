@@ -1,0 +1,14 @@
+{
+  "name": "recipe-box-backend",
+  "version": "1.0.0",
+  "description": "FastAPI backend for Recipe Box application",
+  "main": "main.py",
+  "scripts": {
+    "start": "python main.py",
+    "dev": "uvicorn main:app --reload --host 0.0.0.0 --port 8000",
+    "install": "pip install -r requirements.txt"
+  },
+  "keywords": ["fastapi", "python", "recipe", "api"],
+  "author": "",
+  "license": "MIT"
+} 
