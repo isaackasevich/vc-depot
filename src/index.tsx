@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import HelloWorldApp from './hello_world/App';
-import RecipeBoxApp from './recipe_box/App';
+import RecipeBoxApp from './recipe_box/frontend/App';
 
 const ProjectSelector: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<'hello_world' | 'recipe_box' | null>(null);

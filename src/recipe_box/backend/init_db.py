@@ -5,13 +5,31 @@ Database initialization script for Recipe Box
 
 import os
 import sys
+import csv
+import json
 from sqlalchemy import create_engine, text
 from dotenv import load_dotenv
 
 load_dotenv()
 
+CSV_PATH = os.path.join(os.path.dirname(__file__), 'sample_recipes.csv')
+
+def load_recipes_from_csv(csv_path):
+    recipes = []
+    with open(csv_path, newline='', encoding='utf-8') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            # Parse JSON arrays for ingredients and instructions
+            row['ingredients'] = json.loads(row['ingredients'])
+            row['instructions'] = json.loads(row['instructions'])
+            row['prep_time'] = int(row['prep_time'])
+            row['cook_time'] = int(row['cook_time'])
+            row['servings'] = int(row['servings'])
+            recipes.append(row)
+    return recipes
+
 def init_database():
-    """Initialize the database with tables and sample data"""
+    """Initialize the database with tables and sample data from CSV"""
     
     # Database URL from environment variable
     DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://recipe_user:recipe_password@localhost:5432/recipe_box")
@@ -50,45 +68,9 @@ def init_database():
         
         print("✅ Recipes table created successfully")
         
-        # Insert sample data
-        print("📝 Inserting sample data...")
-        
-        sample_recipes = [
-            {
-                "name": "Spaghetti Carbonara",
-                "ingredients": ["400g spaghetti", "200g pancetta", "4 large eggs", "100g Pecorino Romano cheese", "100g Parmigiano-Reggiano", "Black pepper", "Salt"],
-                "instructions": [
-                    "Bring a large pot of salted water to boil and cook spaghetti according to package directions",
-                    "While pasta cooks, cut pancetta into small cubes and cook in a large skillet until crispy",
-                    "In a bowl, whisk together eggs, grated cheeses, and black pepper",
-                    "Drain pasta, reserving 1 cup of pasta water",
-                    "Add hot pasta to the skillet with pancetta, remove from heat",
-                    "Quickly stir in egg mixture, adding pasta water as needed to create a creamy sauce",
-                    "Serve immediately with extra cheese and black pepper"
-                ],
-                "prep_time": 10,
-                "cook_time": 15,
-                "servings": 4,
-                "category": "Italian"
-            },
-            {
-                "name": "Chicken Tikka Masala",
-                "ingredients": ["1kg chicken breast, cubed", "2 cups yogurt", "2 tbsp garam masala", "1 tbsp turmeric", "2 tbsp ginger-garlic paste", "2 onions, diced", "3 tomatoes, pureed", "1 cup heavy cream", "Fresh cilantro", "Basmati rice"],
-                "instructions": [
-                    "Marinate chicken in yogurt, garam masala, turmeric, and ginger-garlic paste for 2 hours",
-                    "Grill or bake chicken until charred and cooked through",
-                    "Sauté onions until golden brown",
-                    "Add tomato puree and cook until thickened",
-                    "Add grilled chicken and simmer for 10 minutes",
-                    "Stir in heavy cream and simmer for 5 more minutes",
-                    "Garnish with fresh cilantro and serve with basmati rice"
-                ],
-                "prep_time": 20,
-                "cook_time": 30,
-                "servings": 6,
-                "category": "Indian"
-            }
-        ]
+        # Insert sample data from CSV
+        print(f"📝 Inserting sample data from {CSV_PATH} ...")
+        sample_recipes = load_recipes_from_csv(CSV_PATH)
         
         insert_query = """
         INSERT INTO recipes (name, ingredients, instructions, prep_time, cook_time, servings, category)
