@@ -1,75 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
-
-interface Recipe {
-  id: number;
-  name: string;
-  ingredients: string[];
-  instructions: string[];
-  prepTime: number;
-  cookTime: number;
-  servings: number;
-  category: string;
-}
+import { recipeAPI, Recipe, RecipeCreate } from './api';
 
 const App: React.FC = () => {
-  const [recipes, setRecipes] = useState<Recipe[]>([
-    {
-      id: 1,
-      name: "Spaghetti Carbonara",
-      ingredients: [
-        "400g spaghetti",
-        "200g pancetta or guanciale",
-        "4 large eggs",
-        "100g Pecorino Romano cheese",
-        "100g Parmigiano-Reggiano",
-        "Black pepper",
-        "Salt"
-      ],
-      instructions: [
-        "Bring a large pot of salted water to boil and cook spaghetti according to package directions",
-        "While pasta cooks, cut pancetta into small cubes and cook in a large skillet until crispy",
-        "In a bowl, whisk together eggs, grated cheeses, and black pepper",
-        "Drain pasta, reserving 1 cup of pasta water",
-        "Add hot pasta to the skillet with pancetta, remove from heat",
-        "Quickly stir in egg mixture, adding pasta water as needed to create a creamy sauce",
-        "Serve immediately with extra cheese and black pepper"
-      ],
-      prepTime: 10,
-      cookTime: 15,
-      servings: 4,
-      category: "Italian"
-    },
-    {
-      id: 2,
-      name: "Chicken Tikka Masala",
-      ingredients: [
-        "1kg chicken breast, cubed",
-        "2 cups yogurt",
-        "2 tbsp garam masala",
-        "1 tbsp turmeric",
-        "2 tbsp ginger-garlic paste",
-        "2 onions, diced",
-        "3 tomatoes, pureed",
-        "1 cup heavy cream",
-        "Fresh cilantro",
-        "Basmati rice"
-      ],
-      instructions: [
-        "Marinate chicken in yogurt, garam masala, turmeric, and ginger-garlic paste for 2 hours",
-        "Grill or bake chicken until charred and cooked through",
-        "Sauté onions until golden brown",
-        "Add tomato puree and cook until thickened",
-        "Add grilled chicken and simmer for 10 minutes",
-        "Stir in heavy cream and simmer for 5 more minutes",
-        "Garnish with fresh cilantro and serve with basmati rice"
-      ],
-      prepTime: 20,
-      cookTime: 30,
-      servings: 6,
-      category: "Indian"
-    }
-  ]);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -77,11 +13,30 @@ const App: React.FC = () => {
     name: '',
     ingredients: [''],
     instructions: [''],
-    prepTime: 0,
-    cookTime: 0,
+    prep_time: 0,
+    cook_time: 0,
     servings: 1,
     category: ''
   });
+
+  // Load recipes from API on component mount
+  useEffect(() => {
+    const loadRecipes = async () => {
+      try {
+        setLoading(true);
+        const data = await recipeAPI.getRecipes();
+        setRecipes(data);
+        setError(null);
+      } catch (err) {
+        setError('Failed to load recipes. Make sure the backend is running on http://localhost:8000');
+        console.error('Error loading recipes:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadRecipes();
+  }, []);
 
   const addIngredient = () => {
     setNewRecipe(prev => ({
@@ -111,29 +66,35 @@ const App: React.FC = () => {
     }));
   };
 
-  const saveRecipe = () => {
+  const saveRecipe = async () => {
     if (newRecipe.name && newRecipe.ingredients && newRecipe.instructions) {
-      const recipe: Recipe = {
-        id: Date.now(),
-        name: newRecipe.name,
-        ingredients: newRecipe.ingredients.filter(ing => ing.trim() !== ''),
-        instructions: newRecipe.instructions.filter(inst => inst.trim() !== ''),
-        prepTime: newRecipe.prepTime || 0,
-        cookTime: newRecipe.cookTime || 0,
-        servings: newRecipe.servings || 1,
-        category: newRecipe.category || 'Other'
-      };
-      setRecipes(prev => [...prev, recipe]);
-      setShowAddForm(false);
-      setNewRecipe({
-        name: '',
-        ingredients: [''],
-        instructions: [''],
-        prepTime: 0,
-        cookTime: 0,
-        servings: 1,
-        category: ''
-      });
+      try {
+        const recipeData: RecipeCreate = {
+          name: newRecipe.name,
+          ingredients: newRecipe.ingredients.filter(ing => ing.trim() !== ''),
+          instructions: newRecipe.instructions.filter(inst => inst.trim() !== ''),
+          prep_time: newRecipe.prep_time || 0,
+          cook_time: newRecipe.cook_time || 0,
+          servings: newRecipe.servings || 1,
+          category: newRecipe.category || 'Other'
+        };
+        
+        const savedRecipe = await recipeAPI.createRecipe(recipeData);
+        setRecipes(prev => [...prev, savedRecipe]);
+        setShowAddForm(false);
+        setNewRecipe({
+          name: '',
+          ingredients: [''],
+          instructions: [''],
+          prep_time: 0,
+          cook_time: 0,
+          servings: 1,
+          category: ''
+        });
+      } catch (err) {
+        setError('Failed to save recipe. Please try again.');
+        console.error('Error saving recipe:', err);
+      }
     }
   };
 
@@ -150,7 +111,18 @@ const App: React.FC = () => {
       </header>
 
       <div className="container">
-        {showAddForm ? (
+        {error && (
+          <div className="error-message">
+            <p>{error}</p>
+            <button onClick={() => setError(null)}>Dismiss</button>
+          </div>
+        )}
+        
+        {loading ? (
+          <div className="loading">
+            <p>Loading recipes...</p>
+          </div>
+        ) : showAddForm ? (
           <div className="add-recipe-form">
             <h2>Add New Recipe</h2>
             <div className="form-group">
@@ -168,16 +140,16 @@ const App: React.FC = () => {
                 <label>Prep Time (min):</label>
                 <input
                   type="number"
-                  value={newRecipe.prepTime}
-                  onChange={(e) => setNewRecipe(prev => ({ ...prev, prepTime: parseInt(e.target.value) || 0 }))}
+                  value={newRecipe.prep_time}
+                  onChange={(e) => setNewRecipe(prev => ({ ...prev, prep_time: parseInt(e.target.value) || 0 }))}
                 />
               </div>
               <div className="form-group">
                 <label>Cook Time (min):</label>
                 <input
                   type="number"
-                  value={newRecipe.cookTime}
-                  onChange={(e) => setNewRecipe(prev => ({ ...prev, cookTime: parseInt(e.target.value) || 0 }))}
+                  value={newRecipe.cook_time}
+                  onChange={(e) => setNewRecipe(prev => ({ ...prev, cook_time: parseInt(e.target.value) || 0 }))}
                 />
               </div>
               <div className="form-group">
@@ -245,8 +217,8 @@ const App: React.FC = () => {
             <div className="recipe-header">
               <h2>{selectedRecipe.name}</h2>
               <div className="recipe-meta">
-                <span>⏱️ Prep: {selectedRecipe.prepTime}min</span>
-                <span>🔥 Cook: {selectedRecipe.cookTime}min</span>
+                <span>⏱️ Prep: {selectedRecipe.prep_time}min</span>
+                <span>🔥 Cook: {selectedRecipe.cook_time}min</span>
                 <span>👥 Serves: {selectedRecipe.servings}</span>
                 <span>🏷️ {selectedRecipe.category}</span>
               </div>
@@ -282,7 +254,7 @@ const App: React.FC = () => {
               >
                 <h3>{recipe.name}</h3>
                 <div className="recipe-card-meta">
-                  <span>⏱️ {recipe.prepTime + recipe.cookTime}min</span>
+                  <span>⏱️ {recipe.prep_time + recipe.cook_time}min</span>
                   <span>👥 {recipe.servings} servings</span>
                   <span>🏷️ {recipe.category}</span>
                 </div>

@@ -1,0 +1,55 @@
+potential names for the recipe app
+
+- culina
+- recipeepee
+- chefcito
+- leftnocrumbs.ai
+- zhuzh
+- fresno
+- zest
+- gastronoME
+- tasto
+- braise
+- potluck
+- mint
+- herb.ai
+- garnish
+- nosh
+- chez-oui-oui.ai
+
+- simmer
+- baste
+- mise
+- savor
+- tastebud
+- flavorista
+- spicebox
+- larder
+- foodhub
+- foodsmith
+- char.ai
+- youmami
+- munch
+- salud
+- cin cin
+- doughing places
+- mecotta
+- donna
+- recipito
+
+- guzzler
+- slurp
+- lunchbox
+- yum (does italian hand when the recipe is being ingested)
+- nonna (with ai assistant called "simona")
+- holster.chef.ai
+- supperluv
+- pufd (plates up forks down)
+- sporkle
+- trough slop
+
+- clean plate club
+- chef's kiss
+- chef.xo
+- delizioso
+- 
